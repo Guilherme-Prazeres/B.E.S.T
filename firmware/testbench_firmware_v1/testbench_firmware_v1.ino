@@ -1,6 +1,6 @@
 #include <Servo.h>
 #include "HX711_ADC.h"
-#include <EEPROM.h>
+// #include <EEPROM.h>
 
 // --- Moving Average Filter Class ---
 // Change this value to make the filter stronger (higher number = smoother but slower to react)
@@ -76,7 +76,6 @@ const int calVal_eepromAdress = 0;
 // MovingAverage torqueFilter;
 MovingAverage currentFilter;
 MovingAverage voltageFilter;
-// MovingAverage torqueFilter;
 
 // --- Sensor Configuration ---
 const float VREF = 4.75; // Arduino reference voltage
@@ -90,7 +89,7 @@ const float V_OFFSET = - 0.2;
 // ACS712 Constants
 // Sensitivities: 5A module = 0.185 (V/A), 20A module = 0.100 (V/A), 30A module = 0.066 (V/A)
 const float ACS712_SENSITIVITY = -0.066; 
-const float ACS712_OFFSET = VREF / 2.0; // ACS712 outputs Vcc/2 at 0 Amps (usually 2.5V)
+const float ACS712_OFFSET = VREF / 2.0; // ACS712 outputs Vcc/2 at 0 Amps
 
 void setup() {
   Serial.begin(115200);
@@ -115,8 +114,8 @@ void setup() {
     delay(200);
     Servo.writeMicroseconds(PWM_MIN);
 
-    float calibrationValue;
-    EEPROM.get(calVal_eepromAdress, calibrationValue); 
+    float calibrationValue = -188.91;
+    // EEPROM.get(calVal_eepromAdress, calibrationValue); 
 
     LoadCell.begin();
     unsigned long stabilizingtime = 2000; 
@@ -282,7 +281,6 @@ void loop() {
     case MAX_TORQUE_TEST:
       {
         
-        // --- ADDED: Set phase to stabilizing ---
         currentTestPhase = STARTING;
         unsigned long stabilizeStart = millis();
         while (millis() - stabilizeStart <= 1000) {
@@ -293,10 +291,9 @@ void loop() {
 
           Servo.writeMicroseconds(PWM_MAX);
 
-          // --- ADDED: Set phase to pulling ---
           currentTestPhase = PULLING;
           unsigned long pullStartTime = millis();
-          unsigned long pullDuration = 10000; // 10 seconds
+          unsigned long pullDuration = 2000;
 
           while (millis() - pullStartTime <= pullDuration) {
             readAndSendTelemetry(); 
@@ -307,7 +304,7 @@ void loop() {
           if (pull < 3) {
             currentTestPhase = COOLDOWN;
             unsigned long cooldownStart = millis();
-            while (millis() - cooldownStart <= 3000) {
+            while (millis() - cooldownStart <= 15000) {
               readAndSendTelemetry();
             }
           }
@@ -315,7 +312,7 @@ void loop() {
 
         currentTestPhase = COOLDOWN;
         unsigned long finalStabilizeStart = millis();
-        while (millis() - finalStabilizeStart <= 3000) {
+        while (millis() - finalStabilizeStart <= 15000) {
           readAndSendTelemetry();
         }
         

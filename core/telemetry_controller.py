@@ -19,7 +19,7 @@ class TelemetryController:
         # Arrays to store top values during PULLING
         self.pulling_torques = []
         self.pulling_currents = []
-        self.pulling_voltages = [] # NEW: Added to track voltage
+        self.pulling_voltages = []
 
     def _generate_card_html(self, value, unit, unit_color):
         """Helper function to generate the Rich Text HTML for the metric cards."""
@@ -111,9 +111,9 @@ class TelemetryController:
             self.pulling_voltages.append(voltage) # Track pulling voltage
             
             # Retrieve the top 300 values
-            top_300_torques = sorted(self.pulling_torques, reverse=True)[:300]
-            top_300_currents = sorted(self.pulling_currents, reverse=True)[:300]
-            top_300_voltages = sorted(self.pulling_voltages, reverse=True)[:300]
+            top_300_torques = sorted(self.pulling_torques, reverse=True)[:20]
+            top_300_currents = sorted(self.pulling_currents, reverse=True)[:20]
+            top_300_voltages = sorted(self.pulling_voltages, reverse=True)[:20]
             
             # Calculate Means
             meanTorque = np.mean(top_300_torques) if top_300_torques else 0.0
