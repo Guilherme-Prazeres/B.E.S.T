@@ -1,4 +1,4 @@
-# 📊 DAQ — Bancada de Ensaio de Servo Motores
+# 📊 B.E.S.T. — Bancada de Ensaio de Servo Top
 
 <!-- ![Status](https://img.shields.io/badge/Status-Funcional-1D9E75?style=flat-square) -->
 ![Versão](https://img.shields.io/badge/Vers%C3%A3o-v1.1.0-185FA5?style=flat-square)
